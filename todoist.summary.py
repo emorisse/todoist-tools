@@ -1,16 +1,13 @@
 import todoist
 import json
-import re
 import operator
-import sqlite3
-import csv
 import sys
 from datetime import datetime, timedelta
-from spcchart import SpcChart
 from dateutil.relativedelta import relativedelta, FR
 
-since = datetime.now() + relativedelta(weekday=FR(-1))
+since = datetime.now() + relativedelta(weekday=FR(-2))
 since = since.strftime("%Y-%m-%dT00:01")
+print since
 
 datecount = {}
 
@@ -19,19 +16,23 @@ password = 'password'
 
 api = todoist.TodoistAPI()
 user = api.login(user,password)
-response = api.get_all_completed_items(since=since, limit=34000)
 
+offset = 0
 names = {}
 items = {}
+response = api.get_all_completed_items(since=since,offset=offset)
 
-for p in response['projects']:
-	names[p] = response['projects'][p]['name']
-	items[p] = []
-
-csvout = csv.writer(sys.stdout)
-for i in response['items']:
-	project = str(i['project_id'])
-	items[project].append(i['content'])
+while len(response['items']) > 0:
+	for p in response['projects']:
+		names[p] = response['projects'][p]['name']
+		items[p] = []
+	
+	for i in response['items']:
+		project = str(i['project_id'])
+		items[project].append(i['content'])
+	
+	offset += len(response['items'])
+	response = api.get_all_completed_items(since=since,offset=offset)
 
 for p in items:
 	print "# ", names[str(p)].encode('ascii', 'xmlcharrefreplace')
