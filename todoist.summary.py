@@ -5,7 +5,12 @@ import sys
 from datetime import datetime, timedelta
 from dateutil.relativedelta import relativedelta, FR
 
-since = datetime.now() + relativedelta(weekday=FR(-2))
+if datetime.today().weekday() == 4: # it's a friday
+   last_friday = -2
+else:
+   last_friday = -1
+
+since = datetime.now() + relativedelta(weekday=FR(last_friday))
 since = since.strftime("%Y-%m-%dT00:01")
 print since
 
