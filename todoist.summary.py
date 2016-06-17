@@ -12,7 +12,6 @@ else:
 
 since = datetime.now() + relativedelta(weekday=FR(last_friday))
 since = since.strftime("%Y-%m-%dT00:01")
-print since
 
 datecount = {}
 
