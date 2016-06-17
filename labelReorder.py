@@ -34,8 +34,8 @@ ids = {}
 
 if online:
 	api = todoist.TodoistAPI()
-	user = 'erich.morisse@gmail.com'
-	password = 'hj3x967GSwoe7uqMxF7u'
+	user = 'username'
+	password = 'password'
 	user = api.login(user,password)
 	offset = 0
 	response = api.sync(resource_types=['labels'])
