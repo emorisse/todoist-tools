@@ -8,20 +8,20 @@ import getopt, sys
 from datetime import datetime, timedelta
 
 online = True
-insensitive = False
+ignoreCase = False
 
 start = "2016-05-04T00:01"
 
 try:
-	opts, args = getopt.getopt(sys.argv[1:], "ois:", ["offline", "insenstivecase", "start"])
+	opts, args = getopt.getopt(sys.argv[1:], "ois:", ["offline", "ignorecase", "start"])
 except getopt.GetoptError as err:
 	# print help information and exit:
 	print str(err)  # will print something like "option -a not recognized"
 	usage()
 	sys.exit(2)
 for o, a in opts:
-     if o in ("-i", "--insensitivecase"):
-         insensitive = True
+     if o in ("-i", "--ignorecase"):
+         ignoreCase = True
      elif o in ("-o", "--offline"):
          online = False
      elif o in ("-s", "--start"):
@@ -45,9 +45,10 @@ if online:
 	#exit
 	while len(response['Labels']) > 0:
 		for i in response['Labels']:
-			if insensitive:
-				labels.append(i['name'].lower())
-				ids[i['name'].lower()] = i['id']
+			if ignoreCase:
+				name = i['name'].lower()
+				labels.append(name)
+				ids[name] = i['id']
 			else:
 				labels.append(i['name'])
 				ids[i['name']] = i['id']
