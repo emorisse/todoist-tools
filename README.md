@@ -10,4 +10,4 @@
 *	optional flag:   -i, --ignorecase: use this flag to ignore upper/lower case in alpha sort  
   
 *controlcharts.R* - R language code to generate the control charts.  
-	* creates charts like exampleplot.png  
+	* creates charts like ![exampleplots.png](exampleplots.png)   
