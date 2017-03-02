@@ -6,7 +6,6 @@ import sqlite3
 import getopt, sys
 
 from datetime import datetime, timedelta
-from spcchart import SpcChart
 from operator import itemgetter, attrgetter, methodcaller
 
 datecount = {}
@@ -52,9 +51,30 @@ for o, a in opts:
          assert False, "unhandled option"
 
 if online:
-	api = todoist.TodoistAPI('add your token here')
+	api = todoist.TodoistAPI('insert API here')
 	offset = 0
-	response = api.sync(resource_types=['projects'])
+	response = api.sync()
+        projectsState = api.state['projects']
+
+        # create a stack of parents and assign parent id by indent
+        parents = ['']
+        last_indent = 1
+        last_id = ''
+        for p in projectsState:
+         if p['indent'] > last_indent:
+            parents.append(last_id)
+         elif p['indent'] < last_indent:
+            parents.pop()
+         p['parent_id'] = parents[-1]
+         last_id = p['id']
+         last_indent = p['indent']
+         #sys.stdout.write("        " * p['indent'])
+         #sys.stdout.write(str(p['parent_id']))
+         #sys.stdout.write("," + str(p['id']))
+         #sys.stdout.write("," + p['name'] + "\n")
+
+        #print(projectsState)
+
 	#names = []
 	ids = []
 	parents = {}
@@ -64,16 +84,21 @@ if online:
 	#last_indent = 15000000
 	offset=0
 
+
 	# collect all of the project information
-	while(len(response['Projects'])) > 0 :
-		filtered = filter(lambda k: k['name'] != "Inbox", response['Projects'])
+        #print(projectsState)
+	while(len(projectsState)) > 0 :
+		filtered = filter(lambda k: k['name'] != "Inbox", projectsState)
 		#for p in response['Projects'] : 
 		for p in filtered :
 			projects.append( { 'name' : p['name'], 'item_order' : p['item_order'], 'indent' : p['indent'], 'id' : p['id'] } )
-		response = api.sync(resource_types=['projects'],offset=offset)
+		#response = api.sync(resource_types=['projects'],offset=offset)
+		projectsState = []
+
 	
 
 	# need to sort the projects by item_order first
+	#print(projects)
 	s = sorted(projects, key=lambda x:x['item_order'])
 	parent = "" # top level unnamed project
 	parents[0] = parent
@@ -93,5 +118,6 @@ if online:
 	for t in tops:
 		start = orderProject(s, t['id'], start)
 
+	#print(projectOrder)
 	api.projects.update_orders_indents(projectOrder)
 	api.commit()
