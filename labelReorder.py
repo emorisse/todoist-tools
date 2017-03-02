@@ -33,28 +33,22 @@ labels = []
 ids = {}
 
 if online:
-	api = todoist.TodoistAPI()
-	user = 'username'
-	password = 'password'
-	user = api.login(user,password)
+	api = todoist.TodoistAPI('insert this here')
 	offset = 0
-	response = api.sync(resource_types=['labels'])
+	api.sync()
+        response = api.state
 	#response = api.get_completed_items(project_id=128244053)
 	#response = api.get_all_completed_items(since=start,limit=34000) # seems to only get 200
 	#print response
 	#exit
-	while len(response['Labels']) > 0:
-		for i in response['Labels']:
-			if ignoreCase:
-				name = i['name'].lower()
-				labels.append(name)
-				ids[name] = i['id']
-			else:
-				labels.append(i['name'])
-				ids[i['name']] = i['id']
-		offset += len(response['Labels'])
-		response = api.sync(resource_types=['labels'], offset=offset)
-		
+	for i in response['labels']:
+		if ignoreCase:
+			name = i['name'].lower()
+			labels.append(name)
+			ids[name] = i['id']
+		else:
+			labels.append(i['name'])
+			ids[i['name']] = i['id']
 
 	s=sorted(labels)
 	#print s
@@ -67,6 +61,6 @@ if online:
 		orders[ids[l]] = order
 		order += 1
 
-	#print orders
+	#print(orders)
 	api.labels.update_orders(orders)
 	api.commit()
