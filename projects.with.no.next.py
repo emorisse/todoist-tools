@@ -10,7 +10,7 @@ online = True
 WEB = False
 
 filter = '@next'
-token = 'your token here!'
+token = 'it goes here!'
 
 try:
 	opts, args = getopt.getopt(sys.argv[1:], "ow", ["offline", "web"])
@@ -30,6 +30,7 @@ for o, a in opts:
 yesnext = {}
 if online:
 	api = todoist.TodoistAPI(token)
+        api.sync()
 	response = api.query([filter])
 	for p in response[0]['data']:
 		if yesnext.has_key(p['project_id']):
@@ -37,8 +38,7 @@ if online:
 		else:
 			yesnext[p['project_id']] = 1
 	offset = 0
-	response = api.sync(resource_types=['projects'])
-	for p in response['Projects']:
+	for p in api.state['projects']:
 		if yesnext.has_key(p['id']):
 			1
 		else:
