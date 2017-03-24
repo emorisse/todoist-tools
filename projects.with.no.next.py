@@ -10,7 +10,7 @@ online = True
 WEB = False
 
 filter = '@next'
-token = 'it goes here!'
+token = 'goes here!'
 
 try:
 	opts, args = getopt.getopt(sys.argv[1:], "ow", ["offline", "web"])
@@ -39,9 +39,10 @@ if online:
 			yesnext[p['project_id']] = 1
 	offset = 0
 	for p in api.state['projects']:
-		if yesnext.has_key(p['id']):
+		if yesnext.has_key(p['id']) or p['is_archived'] == 1:
 			1
 		else:
 			print "* ", p['name']
+                        #print p
 	
 
