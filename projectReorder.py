@@ -51,7 +51,7 @@ for o, a in opts:
          assert False, "unhandled option"
 
 if online:
-	api = todoist.TodoistAPI('insert API here')
+	api = todoist.TodoistAPI('token goes here!')
 	offset = 0
 	response = api.sync()
         projectsState = api.state['projects']
@@ -87,15 +87,10 @@ if online:
 
 	# collect all of the project information
         #print(projectsState)
-	while(len(projectsState)) > 0 :
-		filtered = filter(lambda k: k['name'] != "Inbox", projectsState)
-		#for p in response['Projects'] : 
-		for p in filtered :
-			projects.append( { 'name' : p['name'], 'item_order' : p['item_order'], 'indent' : p['indent'], 'id' : p['id'] } )
-		#response = api.sync(resource_types=['projects'],offset=offset)
-		projectsState = []
-
-	
+	filtered = filter(lambda k: k['name'] != "Inbox", projectsState)
+	#for p in response['Projects'] : 
+	for p in filtered :
+		projects.append( { 'name' : p['name'], 'item_order' : p['item_order'], 'indent' : p['indent'], 'id' : p['id'] } )
 
 	# need to sort the projects by item_order first
 	#print(projects)
