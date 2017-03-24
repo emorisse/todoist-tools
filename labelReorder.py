@@ -10,8 +10,6 @@ from datetime import datetime, timedelta
 online = True
 ignoreCase = False
 
-start = "2016-05-04T00:01"
-
 try:
 	opts, args = getopt.getopt(sys.argv[1:], "ois:", ["offline", "ignorecase", "start"])
 except getopt.GetoptError as err:
@@ -33,14 +31,10 @@ labels = []
 ids = {}
 
 if online:
-	api = todoist.TodoistAPI('insert this here')
+	api = todoist.TodoistAPI('goes here!')
 	offset = 0
 	api.sync()
         response = api.state
-	#response = api.get_completed_items(project_id=128244053)
-	#response = api.get_all_completed_items(since=start,limit=34000) # seems to only get 200
-	#print response
-	#exit
 	for i in response['labels']:
 		if ignoreCase:
 			name = i['name'].lower()
@@ -51,8 +45,6 @@ if online:
 			ids[i['name']] = i['id']
 
 	s=sorted(labels)
-	#print s
-	#print ids
 
 	orders = {}
 	order = 1
